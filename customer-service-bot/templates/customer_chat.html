@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mmf店铺客服 - 智能助手</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<style>
+  .chat-only-layout { display: flex; flex-direction: column; height: 100vh; max-width: 800px; margin: 0 auto; background: var(--white); box-shadow: var(--shadow); }
+  .chat-only-header { padding: 16px 24px; background: linear-gradient(135deg, var(--blue-200), var(--blue-100)); text-align: center; border-bottom: 1px solid var(--blue-50); }
+  .chat-only-header h1 { font-size: 18px; color: var(--blue-500); display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .chat-only-header .subtitle { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+  .chat-only-header .mode-badge { display: inline-block; font-size: 11px; padding: 2px 10px; border-radius: 10px; margin-left: 8px; }
+  .mode-ai { background: var(--blue-100); color: var(--blue-500); }
+  .mode-human { background: #E8F8F5; color: #27AE60; }
+  .chat-only-messages { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; background: linear-gradient(180deg, var(--blue-50) 0%, var(--cream) 100%); }
+  .chat-only-input { padding: 16px 24px; background: var(--white); border-top: 1px solid var(--blue-50); }
+  .transfer-notice { text-align: center; padding: 10px; margin: 8px 0; background: #E8F8F5; border: 1px solid #A3E4D7; border-radius: 8px; font-size: 13px; color: #1E8449; }
+  .transfer-notice .icon { font-size: 16px; }
+  .typing-dots { display: flex; gap: 4px; padding: 8px 0; }
+  .typing-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue-300); animation: bounce 1.4s infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-8px); } }
+  .toolbar-btn.transferring { background: #E8F8F5; color: #27AE60; }
+</style>
+</head>
+<body>
+<div class="chat-only-layout">
+  <div class="chat-only-header">
+    <h1>
+      🤖 mmf店铺Agent客服
+      <span class="mode-badge mode-ai" id="modeBadge">AI 客服 momo</span>
+    </h1>
+    <div class="subtitle" id="headerSubtitle">随时为您解答产品咨询和售后问题</div>
+  </div>
+
+  <div class="chat-only-messages" id="chatMessages">
+    <div class="message system" style="align-self:center;max-width:70%">
+      <div class="message-bubble">
+        👋 您好！我是智能客服momo～<br>
+        有什么可以帮您的吗？
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-only-input">
+    <div class="image-preview" id="imagePreview"></div>
+    <div class="voice-hint" id="voiceHint" style="display:none">
+      🎤 <strong>正在聆听...</strong> 请说普通话
+    </div>
+
+    <div class="input-toolbar">
+      <button class="toolbar-btn" id="voiceBtn" onclick="toggleVoice()" title="语音输入">
+        🎤<span class="tooltip">语音输入（普通话）</span>
+      </button>
+      <button class="toolbar-btn" onclick="triggerImage()" title="发送图片">
+        📷<span class="tooltip">发送图片</span>
+      </button>
+      <button class="toolbar-btn" onclick="triggerCamera()" title="拍照">
+        📸<span class="tooltip">拍照</span>
+      </button>
+      <button class="toolbar-btn" id="transferBtn" onclick="transferToHuman()" title="转人工客服">
+        👩‍💻<span class="tooltip">转人工客服</span>
+      </button>
+      <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)" multiple>
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="handleImageUpload(event)" multiple>
+    </div>
+
+    <div class="input-row">
+      <textarea class="message-input" id="messageInput" placeholder="输入您的消息..." rows="1"
+        onkeydown="handleKeyDown(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>➤</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const state = {
+  customerId: 'cust_' + Math.random().toString(36).substring(2, 8),
+  customerName: '顾客' + Math.random().toString(36).substring(2, 5).toUpperCase(),
+  pendingImages: [],
+  isRecording: false,
+  recognition: null,
+  isHumanMode: false,
+  transferTicketId: null,
+  humanPollTimer: null,
+  lastHumanTs: null,
+};
+
+// ── 转人工 ──────────────────────────────────────────────────
+async function transferToHuman() {
+  if (state.isHumanMode) return;
+
+  // 生成转接工单
+  state.transferTicketId = 'TRANSFER-' + Date.now().toString(36).toUpperCase();
+  state.isHumanMode = true;
+
+  // 更新 UI
+  const badge = document.getElementById('modeBadge');
+  badge.textContent = '人工客服';
+  badge.className = 'mode-badge mode-human';
+  document.getElementById('headerSubtitle').textContent = '已转接人工客服，请耐心等待';
+
+  const btn = document.getElementById('transferBtn');
+  btn.classList.add('transferring');
+  btn.querySelector('.tooltip').textContent = '已转接人工';
+
+  // 显示转接提示
+  const container = document.getElementById('chatMessages');
+  const notice = document.createElement('div');
+  notice.className = 'transfer-notice';
+  notice.innerHTML = '<span class="icon">✅</span> 人工客服转接成功，请稍候，客服人员将尽快为您服务';
+  container.appendChild(notice);
+  container.scrollTop = container.scrollHeight;
+
+  // 通知后端
+  try {
+    const resp = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: state.transferTicketId,
+        customer_id: state.customerId,
+        customer_name: state.customerName,
+        content: '[系统] 顾客请求转接人工客服',
+        platform: 'taobao',
+        thread_id: state.customerId,
+        metadata: { type: 'transfer_to_human', transfer_ticket: state.transferTicketId },
+      })
+    });
+    const data = await resp.json();
+    if (data.error) {
+      // 后端转人工失败，回滚 UI
+      state.isHumanMode = false;
+      state.transferTicketId = null;
+      badge.textContent = 'AI 客服 momo';
+      badge.className = 'mode-badge mode-ai';
+      document.getElementById('headerSubtitle').textContent = '随时为您解答产品咨询和售后问题';
+      btn.classList.remove('transferring');
+      btn.querySelector('.tooltip').textContent = '转人工客服';
+      addSystemMessage('转人工失败：' + data.error);
+      return;
+    }
+    // 成功转接后开启轮询，接收人工回复
+    startHumanPoll();
+  } catch(e) {
+    addSystemMessage('网络连接失败，转人工请求未送达，请重试');
+    state.isHumanMode = false;
+    state.transferTicketId = null;
+  }
+}
+
+// ── 人工回复轮询 ────────────────────────────────────────────
+function startHumanPoll() {
+  stopHumanPoll();
+  state.humanPollTimer = setInterval(pollHumanReplies, 3000);
+}
+function stopHumanPoll() {
+  if (state.humanPollTimer) { clearInterval(state.humanPollTimer); state.humanPollTimer = null; }
+}
+async function pollHumanReplies() {
+  if (!state.isHumanMode) { stopHumanPoll(); return; }
+  try {
+    const url = `/api/customer/${encodeURIComponent(state.customerId)}/updates` +
+      (state.lastHumanTs ? `?since=${encodeURIComponent(state.lastHumanTs)}` : '');
+    const r = await fetch(url);
+    if (!r.ok) return;
+    const d = await r.json();
+    const msgs = d.messages || [];
+    for (const m of msgs) {
+      if (!m.content) continue;
+      addMessage('agent', m.content);
+      if (m.ts) state.lastHumanTs = m.ts;
+    }
+    // 若已不处于转接状态（坐席关闭），停止轮询
+    if (d.is_transfer === false) {
+      stopHumanPoll();
+      state.isHumanMode = false;
+      const badge = document.getElementById('modeBadge');
+      badge.textContent = 'AI 客服 momo';
+      badge.className = 'mode-badge mode-ai';
+    }
+  } catch(e) { /* 静默，下次重试 */ }
+}
+
+// ── 消息发送 ────────────────────────────────────────────────
+let messageCounter = 0;
+
+function addMessage(type, content, images = []) {
+  const container = document.getElementById('chatMessages');
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `message ${type}`;
+
+  // customer = 顾客（右边）, agent = 客服（左边）
+  const avatar = type === 'customer' ? '👤' : (state.isHumanMode ? '👩‍💻' : '🤖');
+  const avatarBg = type === 'customer'
+    ? 'background:linear-gradient(135deg,var(--yellow-300),var(--yellow-400))'
+    : 'background:linear-gradient(135deg,var(--blue-300),var(--blue-500))';
+
+  let imageHtml = '';
+  if (images.length) {
+    imageHtml = images.map(src => `<img class="message-image" src="${src}" onclick="window.open('${src}')" />`).join('');
+  }
+
+  const time = new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'});
+
+  msgDiv.innerHTML = `
+    <div class="message-avatar" style="${avatarBg};color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0">${avatar}</div>
+    <div style="min-width:0">
+      <div class="message-bubble">${content.replace(/\n/g, '<br>')}${imageHtml}</div>
+      <div class="message-time">${time}</div>
+    </div>
+  `;
+
+  container.appendChild(msgDiv);
+  container.scrollTop = container.scrollHeight;
+  return msgDiv;
+}
+
+function addSystemMessage(text) {
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'message system';
+  div.style.cssText = 'align-self:center;max-width:70%';
+  div.innerHTML = `<div class="message-bubble">${text}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function showTyping() {
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'message agent';
+  div.id = 'typingIndicator';
+  const avatar = state.isHumanMode ? '👩‍💻' : '🤖';
+  div.innerHTML = `
+    <div class="message-avatar" style="background:linear-gradient(135deg,var(--blue-300),var(--blue-500));color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0">${avatar}</div>
+    <div class="message-bubble">
+      <div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+    </div>
+  `;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function hideTyping() {
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+
+async function sendMessage() {
+  const input = document.getElementById('messageInput');
+  const content = input.value.trim();
+  if (!content && !state.pendingImages.length) return;
+
+  // 检测是否请求转人工
+  if (!state.isHumanMode && (content.includes('转人工') || content.includes('人工客服') || content.includes('人工服务'))) {
+    const attachments = [...state.pendingImages];
+    addMessage('customer', content, attachments);
+    input.value = '';
+    state.pendingImages = [];
+    document.getElementById('imagePreview').innerHTML = '';
+    autoResize(input);
+    updateSendButton();
+    await transferToHuman();
+    return;
+  }
+
+  const attachments = [...state.pendingImages];
+  addMessage('customer', content || '[图片消息]', attachments);
+
+  input.value = '';
+  state.pendingImages = [];
+  document.getElementById('imagePreview').innerHTML = '';
+  autoResize(input);
+  updateSendButton();
+
+  if (!state.isHumanMode) showTyping();
+
+  try {
+    const resp = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: 'msg_' + (++messageCounter) + '_' + Date.now(),
+        customer_id: state.customerId,
+        customer_name: state.customerName,
+        content: content,
+        content_type: attachments.length ? 'image' : 'text',
+        platform: 'taobao',
+        attachments: attachments,
+        thread_id: state.customerId,
+        metadata: state.isHumanMode ? { mode: 'human', transfer_ticket: state.transferTicketId } : {},
+      })
+    });
+    const data = await resp.json();
+    if (!state.isHumanMode) hideTyping();
+
+    if (data.error) {
+      addSystemMessage('抱歉，系统出错了：' + data.error);
+    } else if (data.transfer) {
+      // 人工模式：消息已送达坐席，回复由轮询拉取
+      if (data.notice) addSystemMessage(data.notice);
+      if (data.content) addMessage('agent', data.content);
+    } else {
+      addMessage('agent', data.content);
+    }
+  } catch(e) {
+    if (!state.isHumanMode) hideTyping();
+    addSystemMessage('网络连接失败，请检查后重试');
+  }
+}
+
+// ── 语音 ────────────────────────────────────────────────────
+function toggleVoice() { state.isRecording ? stopRecording() : startRecording(); }
+
+function startRecording() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) { alert('您的浏览器不支持语音识别，请使用 Chrome'); return; }
+  state.recognition = new SpeechRecognition();
+  state.recognition.lang = 'zh-CN';
+  state.recognition.interimResults = false;
+  state.recognition.onstart = () => {
+    state.isRecording = true;
+    document.getElementById('voiceBtn').classList.add('recording');
+    document.getElementById('voiceHint').style.display = 'block';
+  };
+  state.recognition.onresult = (event) => {
+    document.getElementById('messageInput').value = event.results[0][0].transcript;
+    autoResize(document.getElementById('messageInput'));
+    updateSendButton();
+  };
+  state.recognition.onerror = (event) => { stopRecording(); if (event.error === 'not-allowed') alert('请允许麦克风权限'); };
+  state.recognition.onend = () => stopRecording();
+  state.recognition.start();
+}
+
+function stopRecording() {
+  state.isRecording = false;
+  document.getElementById('voiceBtn').classList.remove('recording');
+  document.getElementById('voiceHint').style.display = 'none';
+  if (state.recognition) { try { state.recognition.stop(); } catch(e) {} state.recognition = null; }
+}
+
+// ── 图片 ────────────────────────────────────────────────────
+function triggerImage() { document.getElementById('imageInput').click(); }
+function triggerCamera() { document.getElementById('cameraInput').click(); }
+
+function handleImageUpload(event) {
+  for (const file of event.target.files) {
+    const reader = new FileReader();
+    reader.onload = (e) => { state.pendingImages.push(e.target.result); renderImagePreview(); updateSendButton(); };
+    reader.readAsDataURL(file);
+  }
+  event.target.value = '';
+}
+
+function renderImagePreview() {
+  document.getElementById('imagePreview').innerHTML = state.pendingImages.map((src, i) =>
+    `<div class="image-preview-item"><img src="${src}" /><button class="remove-btn" onclick="removeImage(${i})">x</button></div>`
+  ).join('');
+}
+function removeImage(i) { state.pendingImages.splice(i, 1); renderImagePreview(); updateSendButton(); }
+
+// ── 键盘 ────────────────────────────────────────────────────
+function handleKeyDown(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
+function updateSendButton() {
+  document.getElementById('sendBtn').disabled = !document.getElementById('messageInput').value.trim() && !state.pendingImages.length;
+}
+document.getElementById('messageInput').addEventListener('input', updateSendButton);
+document.getElementById('messageInput').focus();
+</script>
+</body>
+</html>

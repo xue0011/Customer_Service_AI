@@ -1,0 +1,30 @@
+{
+  "base_product_id": "PROD-HG-002",
+  "name": "不锈钢保温杯 500ml",
+  "category": "home_goods",
+  "subcategory": "kitchen",
+  "brand": "温适",
+  "description": "500ml大容量不锈钢保温杯，采用316不锈钢内胆，耐腐蚀抗氧化，12小时保温保冷。食品级硅胶密封圈，防漏设计，杯盖可作水杯使用。精致外观，适合办公、户外、车载等多场景。",
+  "specs": {
+    "capacity": "500ml",
+    "inner_material": "316不锈钢",
+    "outer_material": "304不锈钢",
+    "insulation": "12小时保温 / 24小时保冷",
+    "seal_material": "食品级硅胶",
+    "weight": "约280g",
+    "care_instructions": "首次使用前请用中性洗涤剂清洗，不可使用钢丝球，不可微波加热"
+  },
+  "variants": [
+    {"sku": "SKU-HG-002-W", "color": "白色", "price": 89.00, "stock": 150},
+    {"sku": "SKU-HG-002-B", "color": "黑色", "price": 89.00, "stock": 180},
+    {"sku": "SKU-HG-002-BL", "color": "蓝色", "price": 89.00, "stock": 130},
+    {"sku": "SKU-HG-002-PK", "color": "粉色", "price": 89.00, "stock": 120}
+  ],
+  "available_sizes": [],
+  "available_colors": ["白色", "黑色", "蓝色", "粉色"],
+  "images": ["/images/products/hg_002_1.jpg", "/images/products/hg_002_2.jpg"],
+  "is_returnable": true,
+  "returnable_category": "home_goods",
+  "tags_attached_by_default": true,
+  "created_at": "2024-05-25"
+}

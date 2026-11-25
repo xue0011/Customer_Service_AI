@@ -1,0 +1,30 @@
+{
+  "base_product_id": "PROD-EL-002",
+  "name": "便携移动电源 20000mAh",
+  "category": "electronics",
+  "subcategory": "power",
+  "brand": "电牛",
+  "description": "20000mAh大容量便携移动电源，支持22.5W快充，双USB-A+Type-C三输出接口，可同时为三台设备充电。内置智能芯片，多重安全保护，符合航空携带标准。",
+  "specs": {
+    "capacity": "20000mAh",
+    "max_output": "22.5W",
+    "input": "Type-C 18W",
+    "output_ports": "USB-A x2 + Type-C x1",
+    "battery_type": "锂聚合物电池",
+    "weight": "约380g",
+    "dimensions": "148 x 69 x 16mm",
+    "safety_features": "过充保护、过放保护、温度保护、短路保护"
+  },
+  "variants": [
+    {"sku": "SKU-EL-002-W", "color": "白色", "price": 159.00, "stock": 180},
+    {"sku": "SKU-EL-002-B", "color": "黑色", "price": 159.00, "stock": 220}
+  ],
+  "available_sizes": [],
+  "available_colors": ["白色", "黑色"],
+  "images": ["/images/products/el_002_1.jpg", "/images/products/el_002_2.jpg"],
+  "is_returnable": true,
+  "returnable_category": "electronics",
+  "returnable_condition": "unopened_only",
+  "tags_attached_by_default": false,
+  "created_at": "2024-08-10"
+}

@@ -1,0 +1,21 @@
+{
+  "tracking_no": "SF1234567892",
+  "order_id": "ORD-20260708-004",
+  "company": "顺丰速运",
+  "company_code": "SF",
+  "status": "已签收",
+  "current_location": "杭州市西湖区",
+  "estimated_delivery": "2026-07-11",
+  "origin": "浙江省杭州市",
+  "destination": "浙江省杭州市西湖区",
+  "tracking_history": [
+    {"time": "2026-07-09 08:30:00", "status": "已揽件", "location": "杭州市余杭区营业点"},
+    {"time": "2026-07-09 14:00:00", "status": "运输中", "location": "杭州市余杭区集散中心"},
+    {"time": "2026-07-10 10:30:00", "status": "运输中", "location": "杭州市萧山区中转场"},
+    {"time": "2026-07-11 07:00:00", "status": "派送中", "location": "杭州市西湖区文三路网点"},
+    {"time": "2026-07-11 09:30:00", "status": "派送中", "location": "快递员正在为您派送"},
+    {"time": "2026-07-11 14:30:00", "status": "已签收", "location": "杭州市西湖区文三路138号"}
+  ],
+  "signed_by": "本人",
+  "signed_time": "2026-07-11 14:30"
+}

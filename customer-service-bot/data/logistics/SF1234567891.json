@@ -1,0 +1,20 @@
+{
+  "tracking_no": "SF1234567891",
+  "order_id": "ORD-20260712-003",
+  "company": "顺丰速运",
+  "company_code": "SF",
+  "status": "运输中",
+  "current_location": "广州市天河区集散中心",
+  "estimated_delivery": "2026-07-18",
+  "origin": "广东省深圳市",
+  "destination": "广东省深圳市南山区",
+  "tracking_history": [
+    {"time": "2026-07-13 11:00:00", "status": "已揽件", "location": "深圳市南山区营业点"},
+    {"time": "2026-07-13 15:30:00", "status": "运输中", "location": "深圳市南山区集散中心"},
+    {"time": "2026-07-14 08:00:00", "status": "运输中", "location": "深圳市宝安区中转场"},
+    {"time": "2026-07-16 14:20:00", "status": "运输中", "location": "广州市黄埔区集散中心"},
+    {"time": "2026-07-17 09:45:00", "status": "运输中", "location": "广州市天河区集散中心"}
+  ],
+  "signed_by": null,
+  "signed_time": null
+}

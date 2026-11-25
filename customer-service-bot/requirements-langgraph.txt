@@ -1,0 +1,10 @@
+# LangGraph / LangChain / MCP 重构版依赖（与原 requirements 并存，可单独安装）
+langgraph>=0.2.60,<1.0
+langchain>=0.3,<1.0
+langchain-core>=0.3
+langchain-openai>=0.2
+langchain-mcp-adapters>=0.1
+mcp>=1.2
+fastapi>=0.110
+uvicorn[standard]>=0.27
+pydantic>=2.0

@@ -1,0 +1,20 @@
+{
+  "tracking_no": "SF1234567894",
+  "order_id": "ORD-20260713-007",
+  "company": "中通快递",
+  "company_code": "ZTO",
+  "status": "已签收",
+  "current_location": "武汉市洪山区",
+  "estimated_delivery": "2026-07-16",
+  "origin": "湖北省武汉市",
+  "destination": "湖北省武汉市洪山区",
+  "tracking_history": [
+    {"time": "2026-07-14 10:00:00", "status": "已揽件", "location": "武汉市江夏区营业点"},
+    {"time": "2026-07-15 09:00:00", "status": "运输中", "location": "武汉市江夏区中转场"},
+    {"time": "2026-07-15 18:00:00", "status": "运输中", "location": "武汉市洪山区集散中心"},
+    {"time": "2026-07-16 08:00:00", "status": "派送中", "location": "快递员正在为您派送"},
+    {"time": "2026-07-16 16:00:00", "status": "已签收", "location": "武汉市洪山区珞喻路1037号"}
+  ],
+  "signed_by": "本人",
+  "signed_time": "2026-07-16 16:00"
+}

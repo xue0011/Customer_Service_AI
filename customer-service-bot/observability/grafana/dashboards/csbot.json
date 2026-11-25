@@ -1,0 +1,45 @@
+{
+  "annotations": { "list": [] },
+  "title": "Customer Service Bot Overview",
+  "uid": "csbot-overview",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "HTTP 请求总数",
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 0 },
+      "targets": [{ "expr": "sum(http_requests_total)", "refId": "A" }]
+    },
+    {
+      "id": 2,
+      "type": "graph",
+      "title": "请求延迟 P95（秒）",
+      "gridPos": { "h": 4, "w": 16, "x": 8, "y": 0 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "graph",
+      "title": "每分钟请求数（按状态码）",
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 4 },
+      "targets": [
+        { "expr": "sum(rate(http_requests_total[1m])) by (status)", "refId": "A" }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "在线服务",
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 10 },
+      "targets": [{ "expr": "up{job=\"csbot\"}", "refId": "A" }]
+    }
+  ]
+}

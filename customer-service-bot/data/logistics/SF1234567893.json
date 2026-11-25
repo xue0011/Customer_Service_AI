@@ -1,0 +1,20 @@
+{
+  "tracking_no": "SF1234567893",
+  "order_id": "ORD-20260705-006",
+  "company": "顺丰速运",
+  "company_code": "SF",
+  "status": "已签收",
+  "current_location": "成都市武侯区",
+  "estimated_delivery": "2026-07-09",
+  "origin": "四川省成都市",
+  "destination": "四川省成都市武侯区",
+  "tracking_history": [
+    {"time": "2026-07-06 09:00:00", "status": "已揽件", "location": "成都市锦江区营业点"},
+    {"time": "2026-07-07 11:00:00", "status": "运输中", "location": "成都市双流区中转场"},
+    {"time": "2026-07-08 08:00:00", "status": "运输中", "location": "成都市武侯区集散中心"},
+    {"time": "2026-07-09 08:30:00", "status": "派送中", "location": "快递员正在为您派送"},
+    {"time": "2026-07-09 10:15:00", "status": "已签收", "location": "成都市武侯区天府大道999号快递柜"}
+  ],
+  "signed_by": "快递柜",
+  "signed_time": "2026-07-09 10:15"
+}

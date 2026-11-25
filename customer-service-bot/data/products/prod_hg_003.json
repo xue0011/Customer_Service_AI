@@ -1,0 +1,27 @@
+{
+  "base_product_id": "PROD-HG-003",
+  "name": "收纳箱三件套",
+  "category": "home_goods",
+  "subcategory": "storage",
+  "brand": "收纳达人",
+  "description": "PP材质收纳箱三件套，包含大中小三个尺寸，满足不同收纳需求。可折叠设计，不用时轻松收纳不占空间。加厚箱体承重达50kg，带盖防尘，透明款式一目了然，快速找到所需物品。",
+  "specs": {
+    "material": "PP（聚丙烯）",
+    "set_contents": "大号（45L）x1、中号（25L）x1、小号（12L）x1",
+    "load_capacity": "50kg",
+    "design": "可折叠、带盖",
+    "features": "防尘防潮、底部加固",
+    "care_instructions": "用湿布擦拭清洁，不可水洗，避免阳光直射"
+  },
+  "variants": [
+    {"sku": "SKU-HG-003-T", "color": "透明", "price": 149.00, "stock": 100},
+    {"sku": "SKU-HG-003-W", "color": "白色", "price": 149.00, "stock": 90}
+  ],
+  "available_sizes": [],
+  "available_colors": ["透明", "白色"],
+  "images": ["/images/products/hg_003_1.jpg", "/images/products/hg_003_2.jpg"],
+  "is_returnable": true,
+  "returnable_category": "home_goods",
+  "tags_attached_by_default": true,
+  "created_at": "2024-10-10"
+}

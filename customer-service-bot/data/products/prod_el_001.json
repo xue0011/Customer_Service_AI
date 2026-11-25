@@ -1,0 +1,29 @@
+{
+  "base_product_id": "PROD-EL-001",
+  "name": "无线蓝牙耳机",
+  "category": "electronics",
+  "subcategory": "audio",
+  "brand": "声悦",
+  "description": "主动降噪蓝牙5.3耳机，续航30小时，IPX5防水。采用高品质动圈单元，支持AAC/SBC音频解码，低延迟游戏模式。人体工学入耳设计，配备多尺寸耳塞，佩戴稳固舒适。",
+  "specs": {
+    "bluetooth_version": "5.3",
+    "battery_life": "30小时（含充电仓）",
+    "water_resistance": "IPX5",
+    "driver_size": "13mm动圈",
+    "noise_cancellation": "主动降噪（ANC）",
+    "charging_port": "Type-C",
+    "weight": "单耳约4.5g"
+  },
+  "variants": [
+    {"sku": "SKU-EL-001-W", "color": "白色", "price": 299.00, "stock": 200},
+    {"sku": "SKU-EL-001-B", "color": "黑色", "price": 299.00, "stock": 250}
+  ],
+  "available_sizes": [],
+  "available_colors": ["白色", "黑色"],
+  "images": ["/images/products/el_001_1.jpg", "/images/products/el_001_2.jpg"],
+  "is_returnable": true,
+  "returnable_category": "electronics",
+  "returnable_condition": "unopened_only",
+  "tags_attached_by_default": false,
+  "created_at": "2024-07-01"
+}

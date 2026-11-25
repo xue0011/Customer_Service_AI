@@ -1,0 +1,34 @@
+{
+  "base_product_id": "PROD-CL-004",
+  "name": "商务休闲西装外套",
+  "category": "clothing",
+  "subcategory": "jacket",
+  "brand": "绅装",
+  "description": "商务休闲两穿西装外套，精选羊毛混纺面料，质感挺括有型。经典平驳领设计，单排两粒扣，内里顺滑里衬，穿着舒适不拘束。适合商务会议、日常通勤及休闲场合。",
+  "specs": {
+    "material": "羊毛混纺",
+    "style": "商务休闲",
+    "season": "春秋冬",
+    "fit": "修身版型",
+    "length": "常规款",
+    "care_instructions": "建议干洗，不可水洗，不可漂白，低温熨烫"
+  },
+  "variants": [
+    {"sku": "SKU-CL-004-B-M", "color": "黑色", "size": "M", "price": 899.00, "stock": 45},
+    {"sku": "SKU-CL-004-B-L", "color": "黑色", "size": "L", "price": 899.00, "stock": 55},
+    {"sku": "SKU-CL-004-B-XL", "color": "黑色", "size": "XL", "price": 899.00, "stock": 35},
+    {"sku": "SKU-CL-004-DG-M", "color": "深灰", "size": "M", "price": 899.00, "stock": 40},
+    {"sku": "SKU-CL-004-DG-L", "color": "深灰", "size": "L", "price": 899.00, "stock": 50},
+    {"sku": "SKU-CL-004-DG-XL", "color": "深灰", "size": "XL", "price": 899.00, "stock": 30},
+    {"sku": "SKU-CL-004-N-M", "color": "藏青", "size": "M", "price": 899.00, "stock": 42},
+    {"sku": "SKU-CL-004-N-L", "color": "藏青", "size": "L", "price": 899.00, "stock": 52},
+    {"sku": "SKU-CL-004-N-XL", "color": "藏青", "size": "XL", "price": 899.00, "stock": 33}
+  ],
+  "available_sizes": ["M", "L", "XL"],
+  "available_colors": ["黑色", "深灰", "藏青"],
+  "images": ["/images/products/cl_004_1.jpg", "/images/products/cl_004_2.jpg"],
+  "is_returnable": true,
+  "returnable_category": "clothing",
+  "tags_attached_by_default": true,
+  "created_at": "2024-06-15"
+}

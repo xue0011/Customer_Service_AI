@@ -1,0 +1,18 @@
+{
+  "tracking_no": "YT1234567895",
+  "order_id": "ORD-20260716-008",
+  "company": "圆通速递",
+  "company_code": "YTO",
+  "status": "运输中",
+  "current_location": "上海市中转站",
+  "estimated_delivery": "2026-07-19",
+  "origin": "上海市",
+  "destination": "上海市静安区",
+  "tracking_history": [
+    {"time": "2026-07-17 09:00:00", "status": "已揽件", "location": "上海市青浦区营业点"},
+    {"time": "2026-07-17 14:30:00", "status": "运输中", "location": "上海市青浦区集散中心"},
+    {"time": "2026-07-17 20:00:00", "status": "运输中", "location": "上海市中转站"}
+  ],
+  "signed_by": null,
+  "signed_time": null
+}

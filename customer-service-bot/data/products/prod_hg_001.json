@@ -1,0 +1,28 @@
+{
+  "base_product_id": "PROD-HG-001",
+  "name": "记忆棉颈椎枕",
+  "category": "home_goods",
+  "subcategory": "bedding",
+  "brand": "舒眠",
+  "description": "慢回弹记忆棉颈椎枕，采用人体工学蝶形设计，贴合颈部曲线，有效缓解颈椎压力。精选透气面料外套，可拆洗清洁，内置高密度记忆棉内芯，持久不变形。",
+  "specs": {
+    "material": "记忆棉（聚氨酯）",
+    "cover_material": "透气针织面料",
+    "design": "人体工学蝶形",
+    "firmness": "适中偏软",
+    "care_instructions": "外套可拆洗，内芯不可水洗，定期通风晾晒"
+  },
+  "variants": [
+    {"sku": "SKU-HG-001-W-STD", "color": "白色", "size": "标准", "price": 199.00, "stock": 80},
+    {"sku": "SKU-HG-001-W-LG", "color": "白色", "size": "加大", "price": 229.00, "stock": 60},
+    {"sku": "SKU-HG-001-G-STD", "color": "灰色", "size": "标准", "price": 199.00, "stock": 75},
+    {"sku": "SKU-HG-001-G-LG", "color": "灰色", "size": "加大", "price": 229.00, "stock": 55}
+  ],
+  "available_sizes": ["标准", "加大"],
+  "available_colors": ["白色", "灰色"],
+  "images": ["/images/products/hg_001_1.jpg", "/images/products/hg_001_2.jpg"],
+  "is_returnable": true,
+  "returnable_category": "home_goods",
+  "tags_attached_by_default": true,
+  "created_at": "2024-04-20"
+}

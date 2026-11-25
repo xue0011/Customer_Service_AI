@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>CSBot API Demo</title>
+<style>
+body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; }
+input { padding: 4px; margin: 0 4px; }
+pre { background: #f4f4f4; padding: 1rem; overflow: auto; }
+button { padding: 4px 12px; }
+</style>
+</head>
+<body>
+<h2>Customer Service Bot — API Demo</h2>
+<p>BASE <input id="base" value="http://localhost:8000" size="28">
+用户 <input id="u" value="admin">
+密码 <input id="p" value="testpass123" type="password">
+<button onclick="login()">登录</button></p>
+<p>
+<button onclick="call('/health')">健康</button>
+<button onclick="call('/api/auth/me')">我的信息</button>
+<button onclick="call('/api/admin/rag/documents')">知识库文档</button>
+<button onclick="call('/api/admin/approvals')">待审批</button>
+</p>
+<pre id="out">先登录获取 token…</pre>
+<script>
+async function login() {
+  const base = document.getElementById('base').value;
+  const r = await fetch(base + '/api/auth/login', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({username: document.getElementById('u').value,
+                          password: document.getElementById('p').value})
+  });
+  const j = await r.json();
+  if (j.access_token) { localStorage.token = j.access_token; }
+  document.getElementById('out').textContent = JSON.stringify(j, null, 2);
+}
+async function call(path) {
+  const base = document.getElementById('base').value;
+  const r = await fetch(base + path, {headers: {Authorization: 'Bearer ' + (localStorage.token || '')}});
+  document.getElementById('out').textContent = await r.text();
+}
+</script>
+</body>
+</html>

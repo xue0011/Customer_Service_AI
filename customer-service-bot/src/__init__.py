@@ -1,0 +1,3 @@
+"""Customer Service Bot - 多 Agent 客服系统."""
+
+__version__ = "0.1.0"

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服工作台</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<style>
+  .workbench { display: flex; height: 100vh; }
+  .wb-left { width: 260px; background: var(--white); border-right: 1px solid var(--blue-100); display: flex; flex-direction: column; flex-shrink: 0; }
+  .wb-left h2 { padding: 16px; font-size: 16px; color: var(--blue-500); background: linear-gradient(135deg, var(--blue-200), var(--blue-100)); }
+  .wb-left h2 small { font-size: 11px; color: var(--text-light); display: block; font-weight: normal; }
+  .wb-nav { flex: 1; overflow-y: auto; padding: 8px; }
+  .wb-nav-item { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 2px; font-size: 13px; position: relative; }
+  .wb-nav-item:hover { background: var(--blue-50); }
+  .wb-nav-item.active { background: var(--blue-100); font-weight: 600; }
+  .wb-nav-item .badge { position: absolute; right: 10px; background: #E74C3C; color: white; font-size: 11px; padding: 2px 8px; border-radius: 10px; display: none; }
+  .wb-nav-item .badge.show { display: block; }
+  .wb-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .wb-main-header { padding: 12px 20px; background: var(--white); border-bottom: 1px solid var(--blue-50); font-size: 15px; font-weight: 600; }
+  .wb-main-body { flex: 1; display: flex; overflow: hidden; }
+  .wb-list { width: 300px; border-right: 1px solid var(--blue-50); overflow-y: auto; flex-shrink: 0; }
+  .wb-list-item { padding: 14px 16px; border-bottom: 1px solid var(--blue-50); cursor: pointer; }
+  .wb-list-item:hover { background: var(--blue-50); }
+  .wb-list-item.active { background: var(--yellow-100); border-left: 3px solid var(--yellow-300); }
+  .wb-list-item.transfer { border-left: 3px solid #E67E22; }
+  .wb-list-item .name { font-weight: 600; font-size: 14px; }
+  .wb-list-item .name .tag { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 8px; margin-right: 4px; }
+  .tag-taobao { background: #FFF0EB; color: #FF5000; }
+  .tag-pinduoduo { background: #FFEBEB; color: #E02E24; }
+  .tag-jd { background: #FFEBEB; color: #E4393C; }
+  .tag-dewu { background: #EEE; color: #333; }
+  .tag-web { background: #E8F4FD; color: #5BA4CF; }
+  .tag-transfer { background: #FDEBD0; color: #E67E22; }
+  .wb-list-item .preview { font-size: 12px; color: var(--text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px; }
+  .wb-list-item .time { font-size: 11px; color: var(--text-light); float: right; }
+  .wb-chat { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .wb-chat-msgs { flex: 1; overflow-y: auto; padding: 20px; background: linear-gradient(180deg, var(--blue-50) 0%, var(--cream) 100%); display: flex; flex-direction: column; gap: 12px; }
+  .wb-chat-input { padding: 12px 20px; background: var(--white); border-top: 1px solid var(--blue-50); display: none; }
+  .wb-chat-input.show { display: block; }
+  .wb-empty { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--text-light); flex-direction: column; gap: 8px; }
+  .quick-replies { padding: 8px 20px; border-top: 1px solid var(--blue-50); display: none; flex-wrap: wrap; gap: 4px; }
+  .quick-replies.show { display: flex; }
+  .quick-btn { padding: 4px 10px; font-size: 11px; border: 1px solid var(--blue-200); border-radius: 12px; background: var(--white); color: var(--blue-500); cursor: pointer; }
+  .quick-btn:hover { background: var(--blue-50); }
+  .ticket-sidebar { width: 340px; background: var(--white); border-left: 1px solid var(--blue-50); overflow-y: auto; padding: 16px; display: none; }
+  .ticket-sidebar.show { display: block; }
+  .ticket-sidebar h3 { font-size: 14px; margin-bottom: 12px; }
+  .ticket-card { background: var(--blue-50); border-radius: 8px; padding: 12px; margin-bottom: 10px; font-size: 12px; }
+  .ticket-card .actions { display: flex; gap: 8px; margin-top: 8px; }
+  .btn-approve { background: #27AE60; color: white; border: none; padding: 4px 12px; border-radius: 12px; cursor: pointer; font-size: 12px; }
+  .btn-reject { background: white; color: #E74C3C; border: 1px solid #E74C3C; padding: 4px 12px; border-radius: 12px; cursor: pointer; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="workbench">
+  <div class="wb-left">
+    <h2>🛠️ 客服工作台<small>mmf店铺客服中心</small></h2>
+    <div class="wb-nav">
+      <div class="wb-nav-item active" data-p="all" onclick="filterPlatform('all')">📥 全部消息 <span class="badge" id="badgeAll"></span></div>
+      <div class="wb-nav-item" data-p="taobao" onclick="filterPlatform('taobao')">🟠 淘宝 <span class="badge" id="badgeTaobao"></span></div>
+      <div class="wb-nav-item" data-p="pinduoduo" onclick="filterPlatform('pinduoduo')">🔴 拼多多 <span class="badge" id="badgePdd"></span></div>
+      <div class="wb-nav-item" data-p="jd" onclick="filterPlatform('jd')">🔴 京东 <span class="badge" id="badgeJd"></span></div>
+      <div class="wb-nav-item" data-p="dewu" onclick="filterPlatform('dewu')">⚫ 得物 <span class="badge" id="badgeDewu"></span></div>
+      <div class="wb-nav-item" data-p="transfer" onclick="filterPlatform('transfer')" style="border-top:1px solid var(--yellow-200);margin-top:8px;padding-top:12px">🆘 转人工 <span class="badge" id="badgeTransfer" style="background:#E67E22"></span></div>
+    </div>
+  </div>
+
+  <div class="wb-main">
+    <div class="wb-main-header" id="panelTitle">📥 全部消息</div>
+    <div class="wb-main-body">
+      <div class="wb-list" id="convList"><div class="wb-empty">📭 暂无消息</div></div>
+      <div class="wb-chat">
+        <div class="wb-empty" id="chatEmpty">💬 选择左侧对话查看</div>
+        <div class="wb-chat-msgs" id="chatMsgs" style="display:none"></div>
+        <div class="quick-replies" id="quickReplies">
+          <button class="quick-btn" onclick="quickReply('正在查询，请稍等～')">正在查询</button>
+          <button class="quick-btn" onclick="quickReply('请提供您的订单号')">请提供订单号</button>
+          <button class="quick-btn" onclick="quickReply('已发货，请查看物流信息')">已发货通知</button>
+          <button class="quick-btn" onclick="quickReply('理解您的心情，马上处理')">安抚</button>
+          <button class="quick-btn" onclick="quickReply('还有其他问题吗？')">结束语</button>
+        </div>
+        <div class="wb-chat-input" id="chatInput">
+          <div class="input-row">
+            <textarea class="message-input" id="replyInput" placeholder="输入回复..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendReply()}"></textarea>
+            <button class="send-btn" onclick="sendReply()">➤</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ticket-sidebar" id="ticketPanel">
+    <h3>📋 退货审核工单 <button class="quick-btn" onclick="loadTickets()" style="margin-left:8px">🔄</button></h3>
+    <div id="ticketBody">加载中...</div>
+  </div>
+</div>
+
+<script>
+let customers = [], currentFilter = 'all', currentCust = null;
+const pNames = {taobao:'淘宝', pinduoduo:'拼多多', jd:'京东', dewu:'得物', transfer:'转人工'};
+const pTags = {taobao:'tag-taobao', pinduoduo:'tag-pinduoduo', jd:'tag-jd', dewu:'tag-dewu', transfer:'tag-transfer'};
+
+// ── 管理令牌（对应 .env 的 ADMIN_TOKEN）──
+// 首次访问从 localStorage 或弹窗获取，后续请求自动携带。
+function getAdminToken() {
+  let t = localStorage.getItem('admin_token') || '';
+  if (!t) {
+    t = prompt('请输入管理后台访问令牌（ADMIN_TOKEN）：') || '';
+    if (t) localStorage.setItem('admin_token', t);
+  }
+  return t;
+}
+function adminHeaders(extra = {}) {
+  const t = getAdminToken();
+  const h = {...extra};
+  if (t) h['Authorization'] = 'Bearer ' + t;
+  return h;
+}
+// 401 时清除令牌并提示重新输入
+function handle401(resp) {
+  if (resp.status === 401) {
+    localStorage.removeItem('admin_token');
+    alert('管理令牌无效或已过期，请重新输入。');
+    location.reload();
+    return true;
+  }
+  return false;
+}
+
+async function loadConversations() {
+  try {
+    const r = await fetch('/api/conversations', {headers: adminHeaders()});
+    if (handle401(r)) return;
+    const d = await r.json();
+    customers = (d.conversations || []).map(c => ({
+      ...c, id: c.customer_id, name: c.customer_name,
+      lastMsg: c.last_message || '', lastTime: c.last_time || '',
+      isTransfer: c.is_transfer || false,
+    }));
+  } catch(e) { console.error(e); }
+  render();
+}
+
+function render() {
+  let list = customers;
+  if (currentFilter === 'transfer') list = customers.filter(c => c.isTransfer || c.platform === 'transfer');
+  else if (currentFilter !== 'all') list = customers.filter(c => c.platform === currentFilter && !c.isTransfer);
+
+  document.getElementById('panelTitle').textContent = currentFilter === 'all' ? '📥 全部消息' : ('📥 ' + (pNames[currentFilter] || currentFilter) + '消息');
+
+  const container = document.getElementById('convList');
+  if (!list.length) {
+    container.innerHTML = '<div class="wb-empty">📭 暂无消息</div>';
+  } else {
+    container.innerHTML = list.map(c => `
+      <div class="wb-list-item ${c.isTransfer ? 'transfer' : ''} ${currentCust && currentCust.id === c.id ? 'active' : ''}"
+           onclick="selectCustomer('${c.id}')">
+        <div style="display:flex;justify-content:space-between">
+          <span class="name">
+            <span class="tag ${pTags[c.platform] || 'tag-taobao'}">${c.isTransfer ? '转人工' : (pNames[c.platform] || c.platform)}</span>
+            ${c.name}
+          </span>
+          <span class="time">${c.lastTime}</span>
+        </div>
+        <div class="preview">${c.lastMsg}</div>
+      </div>
+    `).join('');
+  }
+
+  // 更新红点
+  const counts = {all:0, taobao:0, pinduoduo:0, jd:0, dewu:0, transfer:0};
+  customers.forEach(c => {
+    counts.all++;
+    if (c.isTransfer) counts.transfer++;
+    else if (counts[c.platform] !== undefined) counts[c.platform]++;
+  });
+  ['all','taobao','pinduoduo','jd','dewu','transfer'].forEach(k => {
+    const el = document.getElementById('badge' + (k === 'all' ? 'All' : k === 'pinduoduo' ? 'Pdd' : k.charAt(0).toUpperCase() + k.slice(1)));
+    if (el) {
+      el.textContent = counts[k] || '';
+      el.className = 'badge' + (counts[k] > 0 ? ' show' : '');
+    }
+  });
+}
+
+function filterPlatform(p) {
+  currentFilter = p;
+  document.querySelectorAll('.wb-nav-item').forEach(el => el.classList.remove('active'));
+  document.querySelector(`[data-p="${p}"]`).classList.add('active');
+  render();
+}
+
+function selectCustomer(id) {
+  currentCust = customers.find(c => c.id === id);
+  if (!currentCust) return;
+  render();
+  renderChat();
+}
+
+function renderChat() {
+  const msgs = document.getElementById('chatMsgs');
+  const empty = document.getElementById('chatEmpty');
+  const input = document.getElementById('chatInput');
+  const replies = document.getElementById('quickReplies');
+
+  if (!currentCust) {
+    msgs.style.display = 'none'; empty.style.display = 'flex';
+    input.classList.remove('show'); replies.classList.remove('show');
+    return;
+  }
+
+  empty.style.display = 'none'; msgs.style.display = 'flex';
+  input.classList.add('show'); replies.classList.add('show');
+
+  msgs.innerHTML = (currentCust.messages || []).map(m => {
+    const isCustomer = m.type === 'customer';
+    return `<div class="message ${isCustomer ? 'customer' : 'agent'}" style="${isCustomer ? 'align-self:flex-end' : 'align-self:flex-start'}">
+      <div class="message-avatar" style="color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;width:32px;height:32px;border-radius:50%;${isCustomer ? 'background:linear-gradient(135deg,var(--yellow-300),var(--yellow-400))' : 'background:linear-gradient(135deg,var(--blue-300),var(--blue-500))'}">${isCustomer ? '👤' : '👩‍💻'}</div>
+      <div style="min-width:0">
+        <div class="message-bubble">${m.content}</div>
+        <div class="message-time">${m.time}</div>
+      </div>
+    </div>`;
+  }).join('');
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function quickReply(t) { document.getElementById('replyInput').value = t; sendReply(); }
+
+async function sendReply() {
+  const input = document.getElementById('replyInput');
+  const content = input.value.trim();
+  if (!content || !currentCust) return;
+
+  const now = new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'});
+  if (!currentCust.messages) currentCust.messages = [];
+  currentCust.messages.push({type:'agent', content, time: now});
+  currentCust.lastMsg = content;
+  currentCust.lastTime = now;
+  input.value = '';
+  renderChat();
+  render();
+
+  try {
+    await fetch('/api/admin/reply', {
+      method: 'POST', headers: adminHeaders({'Content-Type':'application/json'}),
+      body: JSON.stringify({customer_id: currentCust.customer_id, content, platform: currentCust.platform, thread_id: currentCust.customer_id})
+    }).then(handle401);
+  } catch(e) { console.error(e); }
+}
+
+async function loadTickets() {
+  try {
+    const r = await fetch('/api/tickets', {headers: adminHeaders()});
+    if (handle401(r)) return;
+    const d = await r.json();
+    const panel = document.getElementById('ticketPanel');
+    const body = document.getElementById('ticketBody');
+    panel.classList.add('show');
+    if (!d.tickets.length) { body.innerHTML = '<div style="text-align:center;color:var(--text-light);padding:40px">暂无待审核工单</div>'; return; }
+    body.innerHTML = d.tickets.map(t => `
+      <div class="ticket-card">
+        <div><strong>${t.ticket_id}</strong></div>
+        <div>👤 ${t.customer_name} | 📦 ${t.order_id} | 💰 ¥${t.order_amount}</div>
+        <div>📌 ${t.return_reason}</div>
+        ${t.status === 'pending' ? `
+          <div class="actions">
+            <button class="btn-approve" onclick="resolveTicket('${t.ticket_id}','approve')">批准</button>
+            <button class="btn-reject" onclick="resolveTicket('${t.ticket_id}','reject')">拒绝</button>
+          </div>
+        ` : `<div style="font-size:11px;color:${t.status==='approved'?'#27AE60':'#E74C3C'}">${t.status==='approved'?'已批准':'已拒绝'}</div>`}
+      </div>
+    `).join('');
+  } catch(e) { console.error(e); }
+}
+
+async function resolveTicket(id, action) {
+  const r = await fetch(`/api/tickets/${id}/resolve`, {method:'POST', headers: adminHeaders({'Content-Type':'application/json'}), body:JSON.stringify({action, note:''})});
+  handle401(r);
+  loadTickets();
+}
+
+// 初始化
+loadConversations();
+loadTickets();
+setInterval(loadConversations, 5000);
+setInterval(loadTickets, 30000);
+</script>
+</body>
+</html>

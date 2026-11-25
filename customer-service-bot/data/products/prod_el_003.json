@@ -1,0 +1,31 @@
+{
+  "base_product_id": "PROD-EL-003",
+  "name": "智能手表运动版",
+  "category": "electronics",
+  "subcategory": "wearable",
+  "brand": "腕间科技",
+  "description": "1.43寸AMOLED高清屏幕，100+运动模式，支持心率、血氧、睡眠全天候健康监测。14天超长续航，5ATM防水等级，内置GPS定位，支持微信/支付宝离线支付。",
+  "specs": {
+    "screen": "1.43寸AMOLED",
+    "resolution": "466 x 466像素",
+    "battery_life": "14天（典型使用）",
+    "water_resistance": "5ATM",
+    "sensors": "心率传感器、血氧传感器、加速度计、陀螺仪",
+    "connectivity": "蓝牙5.2、GPS/GLONASS",
+    "strap_material": "氟橡胶表带",
+    "weight": "约52g（含表带）",
+    "compatibility": "Android 6.0+ / iOS 12.0+"
+  },
+  "variants": [
+    {"sku": "SKU-EL-003-B", "color": "黑色", "price": 599.00, "stock": 120},
+    {"sku": "SKU-EL-003-S", "color": "银色", "price": 599.00, "stock": 100}
+  ],
+  "available_sizes": [],
+  "available_colors": ["黑色", "银色"],
+  "images": ["/images/products/el_003_1.jpg", "/images/products/el_003_2.jpg"],
+  "is_returnable": true,
+  "returnable_category": "electronics",
+  "returnable_condition": "unopened_only",
+  "tags_attached_by_default": false,
+  "created_at": "2024-09-05"
+}

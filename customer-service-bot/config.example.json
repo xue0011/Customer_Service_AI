@@ -1,0 +1,43 @@
+{
+  "shop_name": "示例店铺",
+  "shop_id": "demo_shop_001",
+  "presales_agent": {
+    "name": "presales",
+    "description": "售前客服 Agent",
+    "system_prompt_path": "prompts/system/presales.md",
+    "tools": ["knowledge_base", "rag_search", "order_query"],
+    "max_turns": 10,
+    "temperature": 0.7
+  },
+  "aftersales_agent": {
+    "name": "aftersales",
+    "description": "售后客服 Agent",
+    "system_prompt_path": "prompts/system/aftersales.md",
+    "tools": ["order_query", "logistics_query", "refund_query", "modify_order", "return_apply", "knowledge_base"],
+    "max_turns": 10,
+    "temperature": 0.7
+  },
+  "return_policy": {
+    "allowed_window_days": 7,
+    "min_amount_auto": 200.0,
+    "refund_processing_days": 5,
+    "return_address": "浙江省杭州市余杭区仓前街道文一西路1500号 电商产业园3号楼2层",
+    "return_phone": "0571-8888XXXX"
+  },
+  "memory": {
+    "backend": "file",
+    "persist_dir": "./data/memory",
+    "max_context_messages": 20
+  },
+  "guardrail": {
+    "enabled": true,
+    "llm_check_enabled": false,
+    "rules": []
+  },
+  "channels": [
+    {"type": "taobao", "enabled": true, "config": {"app_key": "", "app_secret": "", "session_key": ""}},
+    {"type": "pinduoduo", "enabled": true, "config": {"client_id": "", "client_secret": ""}},
+    {"type": "jd", "enabled": true, "config": {"app_key": "", "app_secret": "", "access_token": ""}},
+    {"type": "dewu", "enabled": true, "config": {"app_key": "", "app_secret": ""}}
+  ]
+}

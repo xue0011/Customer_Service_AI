@@ -1,0 +1,46 @@
+{
+  "policy_name": "退换货政策",
+  "version": "2024.07",
+  "effective_date": "2024-07-01",
+  "rules": [
+    {
+      "condition": "7天无理由退货",
+      "description": "自签收之日起7天内，商品完好、吊牌标签完整、未使用、不影响二次销售，可申请无理由退货。",
+      "exceptions": ["定制商品", "生鲜食品", "内衣裤袜", "已拆封的数码产品", "一次性卫生用品"],
+      "shipping_responsibility": "买家承担退货运费",
+      "refund_timeline": "收到退货后3-5个工作日",
+      "refund_method": "原路退回"
+    },
+    {
+      "condition": "质量问题退货",
+      "description": "商品存在质量问题（破损、瑕疵、功能故障等），经确认后可退货退款。",
+      "exceptions": ["人为损坏", "超出保修期", "未按说明使用导致的损坏"],
+      "shipping_responsibility": "卖家承担全部运费",
+      "refund_timeline": "收到退货后1-3个工作日",
+      "compensation": "可酌情补偿优惠券（最高50元）"
+    },
+    {
+      "condition": "错发/漏发",
+      "description": "收到的商品与订单不符或缺少商品，经核实后补发或退款。",
+      "shipping_responsibility": "卖家承担全部运费",
+      "refund_timeline": "确认后1-2个工作日",
+      "compensation": "补偿优惠券20元"
+    },
+    {
+      "condition": "物流损坏",
+      "description": "快递运输过程中造成的商品损坏，需提供开箱视频或破损照片。",
+      "shipping_responsibility": "卖家承担全部运费",
+      "refund_timeline": "确认后1-3个工作日",
+      "notes": "请保留快递面单和包装，以便向快递公司索赔"
+    }
+  ],
+  "auto_review_threshold": 200.00,
+  "auto_review_note": "订单金额低于200元的退货申请，系统自动判断是否符合退货条件。金额200元及以上的退货申请，提交人工审核。",
+  "return_address": {
+    "name": "退货组",
+    "address": "浙江省杭州市余杭区仓前街道文一西路1500号 电商产业园3号楼2层",
+    "phone": "0571-8888XXXX",
+    "postcode": "311121"
+  },
+  "non_returnable_categories": ["定制商品", "生鲜食品", "内衣裤袜", "已拆封的数码产品", "一次性卫生用品", "虚拟商品"]
+}
